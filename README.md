@@ -5,35 +5,31 @@ Write a Python program for the modulation and demodulation of FSK.
 Python IDE
 # Program
 ```python
+#FSK
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.signal import butter, lfilter
 
-# Butterworth low-pass filter for demodulation
 def butter_lowpass_filter(data, cutoff, fs, order=5):
     nyquist = 0.5 * fs
     normal_cutoff = cutoff / nyquist
     b, a = butter(order, normal_cutoff, btype='low', analog=False)
     return lfilter(b, a, data)
 
-# Parameters
-fs = 1000  # Sampling frequency
-f1 = 30    # Frequency for bit 0
-f2 = 70    # Frequency for bit 1
+fs = 1000
+f1 = 30
+f2 = 70
 bit_rate = 10
-T = 1      # Total time duration
+T = 1
 t = np.linspace(0, T, int(fs * T), endpoint=False)
 
-# Message signal (random bits)
 bits = np.random.randint(0, 2, bit_rate)
 bit_duration = fs // bit_rate
 message_signal = np.repeat(bits, bit_duration)
 
-# Carrier signals
 carrier_f1 = np.sin(2 * np.pi * f1 * t)
 carrier_f2 = np.sin(2 * np.pi * f2 * t)
 
-# FSK Modulation
 fsk_signal = np.zeros_like(t)
 for i, bit in enumerate(bits):
     start = i * bit_duration
@@ -41,9 +37,9 @@ for i, bit in enumerate(bits):
     freq = f2 if bit else f1
     fsk_signal[start:end] = np.sin(2 * np.pi * freq * t[start:end])
 
-# Demodulation using correlation
 ref_f1 = np.sin(2 * np.pi * f1 * t)
 ref_f2 = np.sin(2 * np.pi * f2 * t)
+
 corr_f1 = butter_lowpass_filter(fsk_signal * ref_f1, f2, fs)
 corr_f2 = butter_lowpass_filter(fsk_signal * ref_f2, f2, fs)
 
@@ -57,7 +53,6 @@ for i in range(bit_rate):
 decoded_bits = np.array(decoded_bits)
 demodulated_signal = np.repeat(decoded_bits, bit_duration)
 
-# Plotting
 plt.figure(figsize=(12, 12))
 
 plt.subplot(6, 1, 1)
@@ -90,12 +85,14 @@ plt.show()
 ```
 
 # Output Waveform
-![image](https://github.com/user-attachments/assets/f76c228b-3a35-41e6-b1d3-5774782018ed)
+![image](https://github.com/user-attachments/assets/286184df-2d48-4ba3-b1d5-eaaf73a16acd)
+
 
 # Results
 
-FSK modulation and demodulation were successfully demonstrated. The modulated signal varied between two frequencies depending on the binary input. The demodulated output correctly reproduced the original digital signal, validating the working of the FSK system.
+FSK modulation and demodulation were successfully demonstrated. 
 
 # Output Waveform - Hardware Experiment
+![WhatsApp Image 2025-05-01 at 16 29 56_5072d6ed](https://github.com/user-attachments/assets/284f40ec-7c69-4950-850c-ec0f8ea8217f)
 
 
